@@ -12,6 +12,35 @@ match_data = response.json()
 
 print(match_data["match_id"])
 
-duration_minutes = match_data["duration"] / 60
+duration_minutes = match_data["duration"] // 60
+duration_seconds = match_data["duration"] % 60 
 
-print(f"Match Duration: {duration_minutes:.2f} minutes")
+print(f"Match Duration: {duration_minutes:.2f} minutes and {duration_seconds:.0f} seconds")
+
+players = match_data["players"]
+
+def get_player_stats(player):
+    hero_id = player["hero_id"]
+    kills = player["kills"]
+    deaths = player["deaths"]
+    assists = player["assists"]
+    
+    return hero_id, kills, deaths, assists
+    
+
+radiant_players = []
+dire_players = []
+
+for player in players:
+    if player["player_slot"] < 128:
+        radiant_players.append(player)
+    else:
+        dire_players.append(player)
+        
+
+for num, player in enumerate(players, start = 1):
+    name = player.get("personaname") or "Anonymous Player"
+    
+    hero_id, kills, deaths, assists = get_player_stats(player)
+    
+    print(f"{num}. {name} | Hero ID: {hero_id} | K/D/A: {kills}/{deaths}/{assists} ")
