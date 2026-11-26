@@ -1,11 +1,17 @@
 import requests
-url = "https://api.open-meteo.com/v1/forecast"
 
-params = {
-    "latitude": 10.3157,
-    "longitude": 123.8854,
-    "current": "temperature_2m,relative_humidity_2m",
-    "timezone": "Asia/Manila"
-}
+match_id = 9105978646
 
-response = requests.get(url,params=params, timeout = 15)
+url = f"https://api.opendota.com/api/matches/{match_id}"
+
+response = requests.get(url, timeout=15)
+
+response.raise_for_status()
+
+match_data = response.json()
+
+print(match_data["match_id"])
+
+duration_minutes = match_data["duration"] / 60
+
+print(f"Match Duration: {duration_minutes:.2f} minutes")
