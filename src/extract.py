@@ -15,7 +15,7 @@ print(match_data["match_id"])
 duration_minutes = match_data["duration"] // 60
 duration_seconds = match_data["duration"] % 60 
 
-print(f"Match Duration: {duration_minutes:.2f} minutes and {duration_seconds:.0f} seconds")
+print(f"Match Duration: {duration_minutes} minutes and {duration_seconds} seconds")
 
 players = match_data["players"]
 
@@ -38,9 +38,18 @@ for player in players:
         dire_players.append(player)
         
 
-for num, player in enumerate(players, start = 1):
-    name = player.get("personaname") or "Anonymous Player"
+def print_team(team_name, team_players):
+    print(f"\n== {team_name} ===")
     
-    hero_id, kills, deaths, assists = get_player_stats(player)
+    for num, player in enumerate(team_players, start = 1):
+        name = player.get("personaname") or "Anonymous Player"
     
-    print(f"{num}. {name} | Hero ID: {hero_id} | K/D/A: {kills}/{deaths}/{assists} ")
+        hero_id, kills, deaths, assists = get_player_stats(player)
+    
+        print(f"{num}. {name} | Hero ID: {hero_id} | "
+            f"K/D/A: {kills}/{deaths}/{assists} "
+        )
+
+print_team("RADIANT", radiant_players)
+print_team("DIRE",dire_players)
+
