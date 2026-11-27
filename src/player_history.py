@@ -1,26 +1,44 @@
 import requests
 
-acc_id = 909467283
+def fetch_match_history(acc_id,limit = 20):
+    url = f"https://api.opendota.com/api/players/{acc_id}/matches"
+    
+    params = {"limit":limit}
+    
+    response = requests.get(url, params=params, timeout=15)
+    response.raise_for_status()
+    
+    return response.json()
 
-url = f"https://api.opendota.com/api/players/{acc_id}/matches"
-
-limit = 20
-
-params = {"limit":limit}
-
-response = requests.get(url, params=params, timeout=15)
-response.raise_for_status()
-
-match_data = response.json()
-
-print(f"Total matches retrieved: {len(match_data)}")
-
-for num, match in enumerate(match_data, start=1):
+def get_match_result(match):
     is_radiant = match["player_slot"] < 128
     radiant_win = match["radiant_win"]
-    result = "Win" if is_radiant == radiant_win else "Loss"
     
-    
-    print(f"{num}. Match ID: {match['match_id']} | Hero ID: {match['hero_id']} | "
-          f"Result: {result}")
+    return "Win" if is_radiant == radiant_win else "loss"
 
+def print_match_history(matches):
+    for num, match in enumerate(matches, start=1):
+        is_radiant = match["player_slot"] < 128
+        radiant_win = match["radiant_win"]
+        result = get_match_result(match)
+    
+        print(f"{num}. Match ID: {match['match_id']} | Hero ID: {match['hero_id']} | "
+          f"Result: {result}")
+        
+def calculate_win_rate(matches):
+    wins = 0
+    
+    return win_rate
+
+
+def main():
+    acc_id = 909467283
+    
+    matches = fetch_match_history(acc_id)
+    
+    print(f"Total matches: {len(matches)}")
+    
+    print_match_history(matches)
+    
+if __name__ == "__main__":
+    main()
