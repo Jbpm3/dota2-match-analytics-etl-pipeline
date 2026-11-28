@@ -46,6 +46,41 @@ def calculate_win_rate(matches):
     
     return win_rate
 
+def calculate_hero_stats(matches):
+    hero_stats = {}
+
+    for match in matches:
+        hero_id = match["hero_id"]
+
+        if hero_id not in hero_stats:
+            hero_stats[hero_id] = {
+                "matches": 0,
+                "wins": 0
+            }
+
+        hero_stats[hero_id]["matches"] += 1
+
+        if get_match_result(match) == "Win":
+            hero_stats[hero_id]["wins"] += 1
+
+    for hero_id, stats in hero_stats.items():
+        stats["win_rate"] = (stats["wins"] / stats["matches"]) * 100
+
+    return hero_stats
+
+def print_hero_stats(hero_stats, hero_names):
+    
+    print("\n=== HERO PERFORMANCE ===")
+    
+    for hero_id, stats in hero_stats.items():
+        hero_name = hero_names.get(hero_id, "Unknown Hero")
+
+        matches = stats["matches"]
+        wins = stats["wins"]
+        win_rate = stats["win_rate"]
+        
+        print(f"{hero_name} | Matches: {matches} | Wins: {wins} | Win Rate: {win_rate:.2f}%")
+        
 
 def main():
     acc_id = 909467283
@@ -62,6 +97,9 @@ def main():
     
     print(f"Win Rate: {win_rate:.2f}%")
     
+    hero_stats = calculate_hero_stats(matches)
+    
+    print_hero_stats(hero_stats,hero_names)
     
 if __name__ == "__main__":
     main()
