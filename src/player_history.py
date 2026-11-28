@@ -1,7 +1,23 @@
 import requests
 from heroes import fetch_hero_names
+from datetime import datetime, timedelta, timezone
 
 hero_names = fetch_hero_names()
+
+def filter_recent_matches(matches, days=7):
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    cutoff_timestamp = cutoff.timestamp()
+
+    recent_matches = []
+
+    for match in matches:
+        # Checks whether match["start_time"]
+        # is greater than or equal to cutoff_timestamp
+        if match["start_time"] >= cutoff_timestamp:
+            recent_matches.append(match)
+
+    return recent_matches
+
 
 def fetch_match_history(acc_id,limit = 20):
     url = f"https://api.opendota.com/api/players/{acc_id}/matches"
@@ -100,6 +116,14 @@ def main():
     hero_stats = calculate_hero_stats(matches)
     
     print_hero_stats(hero_stats,hero_names)
+    
+    recent_matches = filter_recent_matches(matches)
+    
+    print(f"Matches in the last 7 days: {len(recent_matches)}")
+    
+    weekly_win_rate = calculate_win_rate(recent_matches)
+    
+    print(f"Weekly Win Rate: {weekly_win_rate:.2f}%")
     
 if __name__ == "__main__":
     main()

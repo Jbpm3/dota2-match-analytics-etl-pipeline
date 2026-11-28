@@ -1,15 +1,13 @@
 # Dota 2 match analytics ETL pipeline
 
-Python scripts that fetch Dota 2 match data from OpenDota and print match summaries and player history.
+Python scripts that fetch Dota 2 match data from OpenDota and print match summaries, player history, and hero performance.
 
-The project currently covers data extraction and console output. Data storage and a complete extract, transform, and load workflow are not implemented yet.
+The current workflow fetches data, calculates match statistics, and prints the results. Data storage and loading are planned.
 
 ## Recent updates
 
-- Added player match history with a default limit of 20 matches.
-- Refactored player history into reusable functions for fetching matches, determining results, and printing history.
-- Added Radiant and Dire rosters with player names, hero IDs, and kills, deaths, and assists.
-- Changed match duration output to minutes and seconds.
+- Player history now resolves hero IDs to localized names from OpenDota.
+- The script calculates the player's overall win rate and reports match counts, wins, and win rates for each hero played.
 
 ## Setup
 
@@ -53,7 +51,9 @@ Set `acc_id` inside `main()` in [`src/player_history.py`](src/player_history.py)
 .\.venv\Scripts\python.exe src/player_history.py
 ```
 
-The script prints the number of returned matches, followed by each match's ID, hero ID, and win or loss result from the player's perspective.
+The script prints the number of returned matches and lists each match ID, hero name, and win or loss from the player's perspective. It displays `Unknown Hero` when an ID has no name in the OpenDota lookup.
+
+The overall win rate is the percentage of returned matches the player won. The hero performance summary lists the matches played, wins, and win rate for each hero in that same set of matches.
 
 `fetch_match_history(acc_id, limit=20)` controls the number of matches requested. To request a different number, change the call in `main()`, for example:
 
@@ -68,11 +68,11 @@ Both scripts read IDs from the source code. They do not accept command-line argu
 | File | Purpose |
 | --- | --- |
 | [`src/extract.py`](src/extract.py) | Fetches one match and prints its duration and team statistics. |
-| [`src/player_history.py`](src/player_history.py) | Fetches a player's match history and prints results. |
+| [`src/player_history.py`](src/player_history.py) | Prints player match history, overall win rate, and per-hero statistics. |
+| [`src/heroes.py`](src/heroes.py) | Maps OpenDota hero IDs to localized names. |
 | [`requirements.txt`](requirements.txt) | Lists the Python dependency. |
 
 ## Current limitations
 
-- `calculate_win_rate()` is unfinished and returns an undefined variable. The player history script does not call it.
 - Results are printed to the console. The scripts do not save data to files or a database.
 - API requests use a 15-second timeout and raise errors for unsuccessful HTTP responses. There is no retry logic.
