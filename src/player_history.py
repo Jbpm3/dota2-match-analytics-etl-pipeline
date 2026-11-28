@@ -101,7 +101,7 @@ def print_hero_stats(hero_stats, hero_names):
 def main():
     acc_id = 909467283
     
-    matches = fetch_match_history(acc_id)
+    matches = fetch_match_history(acc_id, limit = 100)
     
     hero_names = fetch_hero_names()
     
@@ -117,7 +117,7 @@ def main():
     
     print_hero_stats(hero_stats,hero_names)
     
-    recent_matches = filter_recent_matches(matches)
+    recent_matches = filter_recent_matches(matches, days = 7)
     
     print(f"Matches in the last 7 days: {len(recent_matches)}")
     
